@@ -1,0 +1,45 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card border-0 shadow-lg rounded-3 overflow-hidden" style="width: 26rem;">
+    <div class="bg-primary text-white p-5 text-center position-relative">
+      <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10 bg-gradients"></div>
+      <h3 class="fw-bold display-6 mb-1">Iniciar Sesión</h3>
+      <p class="text-white-50 small mb-0">Sistema de Control de Inventario y Ventas</p>
+    </div>
+    <div class="card-body p-5 bg-white">
+      <form (ngSubmit)="onLogin()">
+        <div class="mb-4">
+          <label for="email" class="form-label fw-semibold text-dark">Correo Electrónico</label>
+          <input 
+              type="email" 
+              class="form-control form-control-lg border-2" 
+              id="email"
+              placeholder="nombre@ferreteria.com"
+              [(ngModel)]="email" 
+              name="email" 
+              required>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label fw-semibold text-dark">Contraseña</label>
+          <input 
+              type="password" 
+              class="form-control form-control-lg border-2" 
+              id="password"
+              placeholder="••••••••"
+              [(ngModel)]="password" 
+              name="password" 
+              required>
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm px-4" [disabled]="!email || !password">
+            Ingresar al Sistema
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="card-footer bg-light p-4 border-top-0 text-center">
+      <small class="text-muted">Ferretería El Martillo &copy; 2026</small>
+    </div>
+  </div>
+</div>
+
+

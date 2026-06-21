@@ -1,0 +1,189 @@
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="p-4 bg-light rounded-3 shadow-sm border-start border-primary border-5 d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold text-dark mb-1">{{title()}}</h1>
+                    <p class="text-muted mb-0">Administra el inventario de existencias, códigos de barras, precios y umbrales de stock mínimo.</p>
+                </div>
+                <button type="button" class="btn btn-primary mt-1 mb-1 px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#crearProductoModal">
+                    Crear Producto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <table class="table table-striped align-middle mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th scope="col" class="ps-3">ID</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Stock Actual</th>
+                            <th scope="col">Stock Mínimo</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col" class="text-center">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(row of listadoProductos(); track row.id){
+                            <tr>
+                                <td class="fw-bold ps-3">{{row.id}}</td>
+                                <td><span class="badge bg-secondary opacity-75">{{row.codigo}}</span></td>
+                                <td class="fw-semibold text-dark">{{row.nombre}}</td>
+                                <td class="text-muted" style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{row.descripcion}}
+                                </td>
+                                <td class="fw-bold text-primary">${{row.precio}}</td>
+                                <td>
+                                    <span [class]="row.stock_actual <= row.stock_minimo ? 'text-danger fw-bold' : 'text-dark'">
+                                        {{row.stock_actual}}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{row.stock_minimo}}</td>
+                                <td><span class="badge rounded-pill bg-light text-dark border">{{row.categoria}}</span></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-primary btn-sm m-1" (click)="llenarProductosEditar(row)" data-bs-toggle="modal" data-bs-target="#editarProductoModal">Editar</button>
+                                    <button type="button" class="btn btn-danger btn-sm" (click)="id_productoEliminar = row.id" data-bs-toggle="modal" data-bs-target="#eliminarProductoModal">Eliminar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="crearProductoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="exampleModalLabel">Crear Nuevo Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inputCodigoCrear" class="form-label fw-semibold">Código</label>
+                        <input type="text" class="form-control" id="inputCodigoCrear" placeholder="Ej: FERR-006" [(ngModel)]="codigoNuevo" name="codigoNuevo">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="inputNombreCrear" class="form-label fw-semibold">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="inputNombreCrear" placeholder="Nombre comercial" [(ngModel)]="nombreNuevo" name="nombreNuevo">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="inputDescripcionCrear" class="form-label fw-semibold">Descripción Técnica</label>
+                    <textarea class="form-control" id="inputDescripcionCrear" rows="2" placeholder="Detalles del artículo..." [(ngModel)]="descripcionNuevo" name="descripcionNuevo"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="inputPrecioCrear" class="form-label fw-semibold">Precio de Venta</label>
+                        <input type="number" class="form-control" id="inputPrecioCrear" placeholder="0.00" [(ngModel)]="precioNuevo" name="precioNuevo">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="inputStockCrear" class="form-label fw-semibold">Stock Inicial</label>
+                        <input type="number" class="form-control" id="inputStockCrear" placeholder="Cantidad" [(ngModel)]="stockActualNuevo" name="stockActualNuevo">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="inputMinimoCrear" class="form-label fw-semibold">Stock Mínimo</label>
+                        <input type="number" class="form-control" id="inputMinimoCrear" placeholder="Alerta base" [(ngModel)]="stockMinimoNuevo" name="stockMinimoNuevo">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inputCategoriaCrear" class="form-label fw-semibold">Categoría</label>
+                        <input type="text" class="form-control" id="inputCategoriaCrear" placeholder="Ej: Herramientas" [(ngModel)]="categoriaNuevo" name="categoriaNuevo">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="inputImagenCrear" class="form-label fw-semibold">Ruta de Imagen (URL)</label>
+                        <input type="text" class="form-control" id="inputImagenCrear" placeholder="imagenes/articulo.jpg" [(ngModel)]="imagenUrlNuevo" name="imagenUrlNuevo">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="!precioNuevo || !descripcionNuevo || !nombreNuevo || !codigoNuevo" type="button" class="btn btn-success px-4" data-bs-dismiss="modal" (click)="crearProducto()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="exampleModalLabel">Modificar Registro de Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inputCodigoEditar" class="form-label fw-semibold">Código</label>
+                        <input type="text" class="form-control" id="inputCodigoEditar" [(ngModel)]="codigoEditar" name="codigoEditar">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="inputNombreEditar" class="form-label fw-semibold">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="inputNombreEditar" [(ngModel)]="nombreEditar" name="nombreEditar">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="inputDescripcionEditar" class="form-label fw-semibold">Descripción Técnica</label>
+                    <textarea class="form-control" id="inputDescripcionEditar" rows="2" [(ngModel)]="descripcionEditar" name="descripcionEditar"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="inputPrecioEditar" class="form-label fw-semibold">Precio de Venta</label>
+                        <input type="number" class="form-control" id="inputPrecioEditar" [(ngModel)]="precioEditar" name="precioEditar">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="inputStockEditar" class="form-label fw-semibold">Stock Actual</label>
+                        <input type="number" class="form-control" id="inputStockEditar" [(ngModel)]="stockActualEditar" name="stockActualEditar">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="inputMinimoEditar" class="form-label fw-semibold">Stock Mínimo</label>
+                        <input type="number" class="form-control" id="inputMinimoEditar" [(ngModel)]="stockMinimoEditar" name="stockMinimoEditar">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="inputCategoriaEditar" class="form-label fw-semibold">Categoría</label>
+                        <input type="text" class="form-control" id="inputCategoriaEditar" [(ngModel)]="categoriaEditar" name="categoriaEditar">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="inputImagenEditar" class="form-label fw-semibold">Ruta de Imagen (URL)</label>
+                        <input type="text" class="form-control" id="inputImagenEditar" [(ngModel)]="imagenUrlEditar" name="imagenUrlEditar">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="!precioEditar || !descripcionEditar || !nombreEditar" type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" (click)="editarProducto()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarProductoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold">Remover del Inventario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="fs-5 mb-0">¿Estás seguro de borrar este producto de forma permanente?</p>
+                <small class="text-muted">Se eliminará todo el historial físico en almacén.</small>
+            </div>
+            <div class="modal-footer bg-light border-top-0 justify-content-center">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal" (click)="eliminarProducto()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>

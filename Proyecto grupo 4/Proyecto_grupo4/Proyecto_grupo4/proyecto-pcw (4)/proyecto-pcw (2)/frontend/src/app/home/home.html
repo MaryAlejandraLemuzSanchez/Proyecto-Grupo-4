@@ -1,0 +1,50 @@
+<div class="container py-6">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="p-5 bg-light rounded-3 shadow-sm border-start border-primary border-5">
+                <h1 class="display-5 fw-bold text-dark">¡Bienvenido a Ferretería El Martillo!</h1>
+                <p class="col-md-8 fs-4 text-muted">Sistema de administración de Inventarios, Clientes y Órdenes de compra de la sucursal central.</p>
+                <hr class="my-4">
+                <p>Utiliza el menú superior para navegar entre los módulos disponibles de control.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Acceso Rápido -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-primary text-white">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <div>
+                        <h5 class="card-title fw-bold">Catálogo de Productos</h5>
+                        <p class="card-text opacity-75">Administra las existencias, precios y descripciones del inventario actual.</p>
+                    </div>
+                    <button class="btn btn-light btn-sm mt-3 w-50" [routerLink]="'/productos'">Ir a Módulo</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-success text-white">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <div>
+                        <h5 class="card-title fw-bold">Listado de Clientes</h5>
+                        <p class="card-text opacity-75">Control de registros, perfiles, correos electrónicos y roles de usuarios.</p>
+                    </div>
+                    <button class="btn btn-light btn-sm mt-3 w-50" [routerLink]="'/usuarios'">Ir a Módulo</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0 bg-dark text-white">
+                <div class="card-body d-flex flex-column justify-content-between p-4">
+                    <div>
+                        <h5 class="card-title fw-bold">Reportes y Estadísticas</h5>
+                        <p class="card-text opacity-75">Visualiza el resumen analítico de los movimientos globales generados.</p>
+                    </div>
+                    <button class="btn btn-light btn-sm mt-3 w-50" [routerLink]="'/reportes'">Ir a Módulo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

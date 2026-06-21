@@ -1,0 +1,80 @@
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Dashboard General - Panel de Control Ferretero</h2>
+        </div>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Productos Registrados</h5>
+                    <p class="display-4 fw-bold">{{ datosDashboard().totales.productos }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Proveedores Activos</h5>
+                    <p class="display-4 fw-bold">{{ datosDashboard().totales.proveedores }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-uppercase">Órdenes Realizadas</h5>
+                    <p class="display-4 fw-bold">{{ datosDashboard().totales.ordenes }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white d-flex justify-content-between align-text-center">
+                    <h5 class="mb-0">⚠️ Alerta Crítica: Productos con Stock Bajo / Crítico</h5>
+                    <button class="btn btn-light btn-sm fw-bold text-danger" (click)="cargarReporteStockBajo()">Refrescar</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Código</th>
+                                <th scope="col">Nombre del Material</th>
+                                <th scope="col">Categoría</th>
+                                <th scope="col" class="text-center">Stock Mínimo</th>
+                                <th scope="col" class="text-center">Stock Físico Actual</th>
+                                <th scope="col" class="text-center">Estado Almacén</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(item of listadoStockBajo(); track item.id){
+                                <tr class="table-warning">
+                                    <td><strong>{{item.codigo}}</strong></td>
+                                    <td>{{item.nombre}}</td>
+                                    <td>{{item.categoria}}</td>
+                                    <td class="text-center">{{item.stock_minimo}}</td>
+                                    <td class="text-center fw-bold text-danger">{{item.stock_actual}}</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-danger p-2">Reabastecer de Inmediato</span>
+                                    </td>
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-success fw-bold">
+                                        ✅ Excelente: No hay productos con escasez de stock. El inventario está óptimo.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

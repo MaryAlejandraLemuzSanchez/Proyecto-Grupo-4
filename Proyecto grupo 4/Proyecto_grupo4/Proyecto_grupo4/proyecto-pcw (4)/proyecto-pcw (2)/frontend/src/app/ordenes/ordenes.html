@@ -1,0 +1,132 @@
+<div class="container py-6">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="p-5 bg-light rounded-3 shadow-sm border-start border-primary border-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-dark mb-1">Gestión de Órdenes de Compra</h1>
+                    <p class="fs-5 text-muted mb-0">Control de adquisiciones, emisión de comprobantes, simulación de artículos y actualización de inventario.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#registrarOrdenModal">
+                    Nueva Orden de Compra
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th scope="col" class="py-3 ps-4 text-uppercase fs-7 opacity-75">N° Orden</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Proveedor ID</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Fecha Emisión</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Total</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Estado</th>
+                                <th scope="col" class="py-3 text-center pe-4 text-uppercase fs-7 opacity-75">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(row of listadoOrdenes(); track row.id){
+                                <tr>
+                                    <td class="fw-bold ps-4 text-primary">{{row.id}}</td>
+                                    <td class="fw-semibold text-dark">{{row.proveedor_id}}</td>
+                                    <td class="text-muted small">{{row.fecha_orden}}</td>
+                                    <td class="fw-semibold text-dark">${{row.total}}</td>
+                                    <td>
+                                        <span class="badge rounded-pill border px-3 py-2 fw-medium" [ngClass]="{
+                                            'bg-light text-warning border-warning': row.estado === 'Pendiente', 
+                                            'bg-light text-success border-success': row.estado === 'Completado', 
+                                            'bg-light text-danger border-danger': row.estado === 'Cancelado', 
+                                            'bg-light text-info border-info': row.estado === 'En Proceso'
+                                        }">
+                                            {{row.estado}}
+                                        </span>
+                                    </td>
+                                    <td class="text-center pe-4">
+                                        <div class="d-inline-flex gap-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm px-3 shadow-sm" (click)="llenarOrdenEstado(row)" data-bs-toggle="modal" data-bs-target="#cambiarEstadoModal">
+                                                Cambiar Estado
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registrarOrdenModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white p-4">
+                <h5 class="modal-title fw-bold fs-4">Registrar Orden de Compra</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Completa los campos para generar una nueva orden de adquisición en el sistema.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Proveedor (ID)</label>
+                    <input type="number" class="form-control form-control-lg border-2" [(ngModel)]="ordenProveedorIdNuevo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Estado Inicial</label>
+                    <select class="form-select form-select-lg border-2" [(ngModel)]="ordenEstadoNuevo">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Completado">Completado</option>
+                    </select>
+                </div>
+                <div class="p-3 border-2 border rounded-3 bg-light mb-3">
+                    <h6 class="fw-bold text-dark mb-2">Simulación Producto a Comprar</h6>
+                    <label class="form-label text-muted small mb-2">Producto ID / Cantidad / Precio</label>
+                    <div class="d-flex gap-2">
+                        <input type="number" class="form-control border-2" placeholder="ID" [(ngModel)]="prodIdTemporal">
+                        <input type="number" class="form-control border-2" placeholder="Cant" [(ngModel)]="prodCantTemporal">
+                        <input type="number" class="form-control border-2" placeholder="Precio" [(ngModel)]="prodPrecioTemporal">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="!ordenProveedorIdNuevo" type="button" class="btn btn-primary px-4 shadow-sm" data-bs-dismiss="modal" (click)="crearOrden()">Generar Orden</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white p-4">
+                <h5 class="modal-title fw-bold fs-4">Actualizar Estado de la Orden</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Modifica la fase operativa de la transacción comercial seleccionada.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Seleccione el Nuevo Estado</label>
+                    <select class="form-select form-select-lg border-2" [(ngModel)]="nuevoEstadoSeleccionado">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Completado">Completado</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="alert alert-info border-0 shadow-sm rounded-3 small mb-0" role="alert">
+                    Nota: Pasar a estado 'Completado' sumará las cantidades ingresadas al inventario de forma automática.
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-dark px-4 shadow-sm" data-bs-dismiss="modal" (click)="actualizarEstado()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>

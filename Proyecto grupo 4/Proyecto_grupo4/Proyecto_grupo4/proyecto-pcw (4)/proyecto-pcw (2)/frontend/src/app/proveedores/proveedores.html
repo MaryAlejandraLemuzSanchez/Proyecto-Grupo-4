@@ -1,0 +1,158 @@
+<div class="container py-6">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="p-5 bg-light rounded-3 shadow-sm border-start border-primary border-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-dark mb-1">Listado de Proveedores</h1>
+                    <p class="fs-5 text-muted mb-0">Control de registros comerciales, contactos, teléfonos y gestión de suministros de la empresa.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#registrarProveedorModal">
+                    Registrar Proveedor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th scope="col" class="py-3 ps-4 text-uppercase fs-7 opacity-75">ID</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Nombre Empresa</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Contacto</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Teléfono</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Email</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Dirección</th>
+                                <th scope="col" class="py-3 text-center pe-4 text-uppercase fs-7 opacity-75">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(row of listadoProveedores(); track row.id){
+                                <tr>
+                                    <td class="fw-bold ps-4 text-primary">{{row.id}}</td>
+                                    <td class="fw-semibold text-dark">{{row.nombre}}</td>
+                                    <td><span class="text-muted">{{row.contacto}}</span></td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-light text-dark border px-3 py-2 fw-medium">
+                                            {{row.telefono}}
+                                        </span>
+                                    </td>
+                                    <td><span class="text-muted">{{row.email}}</span></td>
+                                    <td><span class="text-dark small">{{row.direccion}}</span></td>
+                                    <td class="text-center pe-4">
+                                        <div class="d-inline-flex gap-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm px-3 shadow-sm" (click)="llenarProveedorEditar(row)" data-bs-toggle="modal" data-bs-target="#editarProveedorModal">
+                                                Editar
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-sm" (click)="idProveedorEliminar = row.id" data-bs-toggle="modal" data-bs-target="#eliminarProveedorModal">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registrarProveedorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white p-4">
+                <h5 class="modal-title fw-bold fs-4">Registrar Proveedor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Completa los campos para dar de alta un nuevo proveedor en la base de datos.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Nombre de la Empresa</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorNombreNuevo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Nombre del Contacto</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorContactoNuevo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Teléfono</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorTelefonoNuevo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Correo Electrónico</label>
+                    <input type="email" class="form-control form-control-lg border-2" [(ngModel)]="proveedorEmailNuevo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Dirección</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorDireccionNuevo">
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="proveedorNombreNuevo == '' || proveedorContactoNuevo == ''" type="button" class="btn btn-primary px-4 shadow-sm" data-bs-dismiss="modal" (click)="crearProveedor()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarProveedorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white p-4">
+                <h5 class="modal-title fw-bold fs-4">Editar Proveedor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Modifica los parámetros del proveedor seleccionado. El ID no se puede alterar manualmente.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Nombre de la Empresa</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorNombreEditar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Nombre del Contacto</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorContactoEditar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Teléfono</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorTelefonoEditar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Correo Electrónico</label>
+                    <input type="email" class="form-control form-control-lg border-2" [(ngModel)]="proveedorEmailEditar">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Dirección</label>
+                    <input type="text" class="form-control form-control-lg border-2" [(ngModel)]="proveedorDireccionEditar">
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="proveedorNombreEditar == '' || proveedorContactoEditar == ''" type="button" class="btn btn-dark px-4 shadow-sm" data-bs-dismiss="modal" (click)="editarProveedor()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarProveedorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white p-4">
+                <h5 class="modal-title fw-bold fs-4">Eliminar Proveedor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="fs-5 text-dark fw-semibold mb-2">¿Estás seguro de borrar este proveedor del sistema?</p>
+                <p class="text-muted small mb-0">Esta acción no se puede deshacer y el registro se borrará permanentemente de la base de datos.</p>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0 justify-content-center">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger px-4 shadow-sm" data-bs-dismiss="modal" (click)="eliminarProveedor()">Confirmar Eliminación</button>
+            </div>
+        </div>
+    </div>
+</div>

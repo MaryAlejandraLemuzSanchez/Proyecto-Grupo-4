@@ -1,0 +1,154 @@
+<div class="container py-6">
+    <div class="row mb-4">
+        <div class="col">
+            <div class="p-5 bg-light rounded-3 shadow-sm border-start border-primary border-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-dark mb-1">Listado de Clientes</h1>
+                    <p class="fs-5 text-muted mb-0">Control de registros, perfiles, correos electrónicos y roles de usuarios de la sucursal central.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#registrarClienteModal">
+                    Registrar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th scope="col" class="py-3 ps-4 text-uppercase fs-7 opacity-75">ID</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Nombre</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Correo</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Rol</th>
+                                <th scope="col" class="py-3 text-uppercase fs-7 opacity-75">Fecha Creación</th>
+                                <th scope="col" class="py-3 text-center pe-4 text-uppercase fs-7 opacity-75">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(row of listadoUsuarios(); track row.id){
+                                <tr>
+                                    <td class="fw-bold ps-4 text-primary">{{row.id}}</td>
+                                    <td class="fw-semibold text-dark">{{row.nombre}}</td>
+                                    <td><span class="text-muted">{{row.email}}</span></td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-light text-dark border px-3 py-2 fw-medium">
+                                            {{row.rol}}
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">{{row.fecha_creacion}}</td>
+                                    <td class="text-center pe-4">
+                                        <div class="d-inline-flex gap-2">
+                                            <button type="button" class="btn btn-outline-primary btn-sm px-3 shadow-sm" (click)="llenarUsuariosEditar(row)" data-bs-toggle="modal" data-bs-target="#editarClienteModal">
+                                                Editar
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-sm" (click)="id_usuarioEliminar = row.id" data-bs-toggle="modal" data-bs-target="#eliminarClienteModal">
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="registrarClienteModal" tabindex="-1" aria-labelledby="registrarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white p-4">
+                <h5 class="modal-title fw-bold fs-4" id="registrarModalLabel">Registrar Cliente</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Completa los campos para dar de alta un nuevo usuario en la base de datos.</p>
+                <div class="mb-3">
+                    <label for="inputNombreCrear" class="form-label fw-semibold text-dark">Nombre Completo</label>
+                    <input type="text" class="form-control form-control-lg border-2" id="inputNombreCrear" placeholder="Ej. Alejandro Martínez" [(ngModel)]="nombreNuevo">
+                </div>
+                <div class="mb-3">
+                    <label for="inputCorreoCrear" class="form-label fw-semibold text-dark">Correo Electrónico (email)</label>
+                    <input type="email" class="form-control form-control-lg border-2" id="inputCorreoCrear" placeholder="nombre@ferreteria.com" [(ngModel)]="correoNuevo">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPasswordCrear" class="form-label fw-semibold text-dark">Contraseña</label>
+                    <input type="password" class="form-control form-control-lg border-2" id="inputPasswordCrear" placeholder="••••••••" [(ngModel)]="passwordNuevo">
+                </div>
+                <div class="mb-3">
+                    <label for="inputRolCrear" class="form-label fw-semibold text-dark">Rol del Sistema</label>
+                    <select class="form-select form-select-lg border-2" id="inputRolCrear" [(ngModel)]="rolNuevo">
+                        <option value="Empleado">Empleado</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="!nombreNuevo || !correoNuevo || !passwordNuevo || !rolNuevo" type="button" class="btn btn-primary px-4 shadow-sm" data-bs-dismiss="modal" (click)="crearUsuario()">Guardar Cliente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarClienteModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white p-4">
+                <h5 class="modal-title fw-bold fs-4" id="editarModalLabel">Modificar Registro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-4">Modifica los parámetros del usuario seleccionado. El ID y la Fecha de Creación no se pueden alterar manualmente.</p>
+                <div class="mb-3">
+                    <label for="inputNombreEditar" class="form-label fw-semibold text-dark">Nombre Completo</label>
+                    <input type="text" class="form-control form-control-lg border-2" id="inputNombreEditar" [(ngModel)]="nombreEditar">
+                </div>
+                <div class="mb-3">
+                    <label for="inputCorreoEditar" class="form-label fw-semibold text-dark">Correo Electrónico</label>
+                    <input type="email" class="form-control form-control-lg border-2" id="inputCorreoEditar" [(ngModel)]="correoEditar">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPasswordEditar" class="form-label fw-semibold text-dark">Contraseña (Encriptada / Texto plano)</label>
+                    <input type="text" class="form-control form-control-lg border-2" id="inputPasswordEditar" [(ngModel)]="passwordEditar" placeholder="Ingresa el nuevo Hash o Texto">
+                </div>
+                <div class="mb-3">
+                    <label for="inputRolEditar" class="form-label fw-semibold text-dark">Rol del Sistema</label>
+                    <select class="form-select form-select-lg border-2" id="inputRolEditar" [(ngModel)]="rolEditar">
+                        <option value="Empleado">Empleado</option>
+                        <option value="Administrador">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button [disabled]="!nombreEditar || !correoEditar || !rolEditar" type="button" class="btn btn-dark px-4 shadow-sm" data-bs-dismiss="modal" (click)="actualizarUsuario()">Actualizar Cliente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarClienteModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white p-4">
+                <h5 class="modal-title fw-bold fs-4" id="eliminarModalLabel">Eliminar Registro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="fs-5 text-dark fw-semibold mb-2">¿Estás seguro de que deseas eliminar este usuario?</p>
+                <p class="text-muted small mb-0">Esta acción no se puede deshacer y el registro se borrará permanentemente del sistema.</p>
+            </div>
+            <div class="modal-footer bg-light p-3 border-top-0 justify-content-center">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger px-4 shadow-sm" data-bs-dismiss="modal" (click)="eliminarUsuario()">Confirmar Eliminación</button>
+            </div>
+        </div>
+    </div>
+</div>
